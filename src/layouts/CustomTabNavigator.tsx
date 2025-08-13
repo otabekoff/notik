@@ -3,7 +3,7 @@ import { View, Pressable, Text, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons, type IoniconsIconName } from '@react-native-vector-icons/ionicons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import { HomeScreen } from '../pages/HomeScreen';
+import { TodoScreen } from '../pages/TodoScreen';
 import { SettingsScreen } from '../pages/SettingsScreen';
 import { PersistentLogger } from '../utils/PersistentLogger';
 import { tabBarStyles } from '../styles/tabBarStyles';
@@ -25,10 +25,10 @@ function NavigationErrorFallback(error: Error, _errorInfo: ErrorInfo) {
 }
 
 export function CustomTabNavigator({ isDarkMode }: CustomTabNavigatorProps) {
-  const [activeTab, setActiveTab] = useState<'Home' | 'Settings'>('Home');
+  const [activeTab, setActiveTab] = useState<'Todo' | 'Settings'>('Todo');
   const insets = useSafeAreaInsets();
 
-  const handleTabPress = (tabName: 'Home' | 'Settings') => {
+  const handleTabPress = (tabName: 'Todo' | 'Settings') => {
     try {
       PersistentLogger.info(`Tab pressed: ${tabName}`, {
         from: activeTab,
@@ -42,9 +42,9 @@ export function CustomTabNavigator({ isDarkMode }: CustomTabNavigatorProps) {
   };
 
   // Define icon names for each tab
-  const getIconName = (tabName: 'Home' | 'Settings', isActive: boolean): IoniconsIconName => {
-    if (tabName === 'Home') {
-      return isActive ? 'home' : 'home-outline';
+  const getIconName = (tabName: 'Todo' | 'Settings', isActive: boolean): IoniconsIconName => {
+    if (tabName === 'Todo') {
+      return isActive ? 'flash' : 'flash-outline';
     } else {
       return isActive ? 'settings' : 'settings-outline';
     }
@@ -68,8 +68,8 @@ export function CustomTabNavigator({ isDarkMode }: CustomTabNavigatorProps) {
       <View style={globalStyles.container}>
         {/* Content Area */}
         <View style={globalStyles.contentContainer}>
-          {activeTab === 'Home' ? (
-            <HomeScreen isDarkMode={isDarkMode} />
+          {activeTab === 'Todo' ? (
+            <TodoScreen isDarkMode={isDarkMode} />
           ) : (
             <SettingsScreen isDarkMode={isDarkMode} />
           )}
@@ -86,16 +86,16 @@ export function CustomTabNavigator({ isDarkMode }: CustomTabNavigatorProps) {
           <Pressable
             style={[
               tabBarStyles.tabItem,
-              activeTab === 'Home' && tabBarStyles.activeTabItem,
+              activeTab === 'Todo' && tabBarStyles.activeTabItem,
             ]}
-            onPress={() => handleTabPress('Home')}
+            onPress={() => handleTabPress('Todo')}
             android_ripple={Platform.OS === 'android' ? getRippleConfig(isDarkMode) : undefined}
           >
             <Ionicons
-              name={getIconName('Home', activeTab === 'Home')}
+              name={getIconName('Todo', activeTab === 'Todo')}
               size={24}
               color={
-                activeTab === 'Home'
+                activeTab === 'Todo'
                   ? isDarkMode
                     ? '#ffffff'
                     : '#007AFF'
@@ -108,7 +108,7 @@ export function CustomTabNavigator({ isDarkMode }: CustomTabNavigatorProps) {
             <Text
               style={[
                 tabBarStyles.tabLabel,
-                activeTab === 'Home'
+                activeTab === 'Todo'
                   ? isDarkMode
                     ? tabBarStyles.tabLabelActiveDark
                     : tabBarStyles.tabLabelActiveLight
@@ -117,7 +117,7 @@ export function CustomTabNavigator({ isDarkMode }: CustomTabNavigatorProps) {
                   : tabBarStyles.tabLabelInactiveLight,
               ]}
             >
-              Home
+              Todo
             </Text>
           </Pressable>
 

@@ -8,32 +8,32 @@ import { globalStyles } from '../styles/globalStyles';
 
 const { width, height } = Dimensions.get('window');
 
-interface HomeScreenProps {
+interface TodoScreenProps {
   isDarkMode: boolean;
 }
 
-function HomeScreenErrorFallback(error: Error, errorInfo: React.ErrorInfo) {
+function TodoScreenErrorFallback(error: Error, errorInfo: React.ErrorInfo) {
   return (
     <View style={globalStyles.errorContainer}>
-      <Text style={globalStyles.errorTitle}>Home Screen Error</Text>
+      <Text style={globalStyles.errorTitle}>Todo Screen Error</Text>
       <Text style={globalStyles.errorText}>{error.message}</Text>
       <Text style={globalStyles.errorText}>{errorInfo.componentStack}</Text>
     </View>
   );
 }
 
-export function HomeScreen({ isDarkMode }: HomeScreenProps) {
+export function TodoScreen({ isDarkMode }: TodoScreenProps) {
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    PersistentLogger.info('HomeScreen rendered', { isDarkMode });
+    PersistentLogger.info('TodoScreen rendered', { isDarkMode });
     return () => {
-      PersistentLogger.info('HomeScreen unmounted');
+      PersistentLogger.info('TodoScreen unmounted');
     };
   }, [isDarkMode]);
 
   return (
-    <ErrorBoundary fallback={HomeScreenErrorFallback}>
+    <ErrorBoundary fallback={TodoScreenErrorFallback}>
       <View
         style={[
           screenStyles.screenContainer,
