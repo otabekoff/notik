@@ -1,4 +1,6 @@
 {
   "name": "Notik",
+  "slug": "notik",
+  "userInterfaceStyle": "automatic",
   "displayName": "Notik"
 }
