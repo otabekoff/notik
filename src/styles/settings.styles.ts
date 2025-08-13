@@ -6,9 +6,7 @@ export const createSettingsStyles = (colors: ColorScheme) => {
     container: {
       flex: 1,
     },
-    safeArea: {
-      flex: 1,
-    },
+
     header: {
       paddingHorizontal: 24,
       paddingVertical: 32,

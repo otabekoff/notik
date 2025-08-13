@@ -6,9 +6,7 @@ export const createHomeStyles = (colors: ColorScheme) => {
     container: {
       flex: 1,
     },
-    safeArea: {
-      flex: 1,
-    },
+
     loadingContainer: {
       flex: 1,
       justifyContent: 'center',

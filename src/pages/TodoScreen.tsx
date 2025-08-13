@@ -26,7 +26,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+// Removed unused SafeAreaView import
 import { globalStyles } from '../styles/globalStyles';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import { PersistentLogger } from '../utils/PersistentLogger';
@@ -236,17 +236,13 @@ function TodoScreen() {
   };
 
   return (
-    <LinearGradient
-      colors={colors.gradients.background}
-      style={homeStyles.container}
-    >
+    <>
       <StatusBar
         barStyle={colors.statusBarStyle}
-        backgroundColor={
-          colors.statusBarStyle === 'dark-content' ? '#00C853' : '#2962FF'
-        }
+        translucent={true}
+        backgroundColor="transparent"
       />
-      <SafeAreaView style={homeStyles.safeArea}>
+      <View style={homeStyles.container}>
         <Header />
         <TodoInput />
         <FlatList
@@ -257,8 +253,8 @@ function TodoScreen() {
           contentContainerStyle={homeStyles.todoListContent}
           ListEmptyComponent={<EmptyState />}
         />
-      </SafeAreaView>
-    </LinearGradient>
+      </View>
+    </>
   );
 }
 

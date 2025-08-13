@@ -4,10 +4,13 @@ export const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  safeArea: {
+    flex: 1,
+  },
   contentContainer: {
     flex: 1,
   },
-    transparentBg: {
+  transparentBg: {
     backgroundColor: 'transparent',
   },
   // Theme Toggle Styles
@@ -136,7 +139,7 @@ export const globalStyles = StyleSheet.create({
   },
   zeroBorderBottom: {
     borderBottomWidth: 0,
-  }
+  },
 });
 
 export const rippleLight = { backgroundColor: 'rgba(0,0,0,0.1)' };

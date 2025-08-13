@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import LinearGradient from 'react-native-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import { ConvexProvider, ConvexReactClient } from 'convex/react';
@@ -19,7 +21,8 @@ function App() {
 
   useEffect(() => {
     if (Platform.OS === 'android') {
-      const navColor = isDarkMode ? '#2962FF' : '#00C853';
+      // Match tab bar background color
+      const navColor = isDarkMode ? '#1a1a1a' : '#ffffff';
       const iconStyle = isDarkMode ? 'light' : 'dark';
       setTimeout(() => {
         try {
@@ -30,7 +33,8 @@ function App() {
           );
           // Also set StatusBar background color
           import('react-native').then(({ StatusBar }) => {
-            StatusBar.setBackgroundColor(navColor, true);
+            StatusBar.setBackgroundColor('transparent', true);
+            StatusBar.setTranslucent(true);
           });
         } catch (error) {
           console.error('Failed to update system navigation bar', error);
@@ -39,11 +43,19 @@ function App() {
     }
   }, [isDarkMode]);
 
+  const { colors } = useTheme();
   return (
     <ConvexProvider client={convex}>
       <ErrorBoundary>
         <SafeAreaProvider style={globalStyles.container}>
-          <CustomTabNavigator />
+          <LinearGradient
+            colors={colors.gradients.background}
+            style={globalStyles.safeArea}
+          >
+            <SafeAreaView style={globalStyles.safeArea}>
+              <CustomTabNavigator />
+            </SafeAreaView>
+          </LinearGradient>
         </SafeAreaProvider>
       </ErrorBoundary>
     </ConvexProvider>
