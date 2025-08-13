@@ -132,3 +132,6 @@ export const globalStyles = StyleSheet.create({
     color: '#fff',
   },
 });
+
+export const rippleLight = { backgroundColor: 'rgba(0,0,0,0.1)' };
+export const rippleDark = { backgroundColor: 'rgba(255,255,255,0.2)' };

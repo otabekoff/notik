@@ -52,9 +52,13 @@ export function CustomTabNavigator({ isDarkMode }: CustomTabNavigatorProps) {
 
   // Create ripple config for Android
   const getRippleConfig = (isDark: boolean) => ({
-    color: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)',
+    color:
+      isDark
+        ? 'rgba(255,255,255,0.3)'
+        : 'rgba(0,0,0,0.2)',
     borderless: false,
-    radius: 50,
+    // radius: 24,
+    foreground: true,
   });
 
   return (
