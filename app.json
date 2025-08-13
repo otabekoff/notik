@@ -3,4 +3,8 @@
   "slug": "notik",
   "userInterfaceStyle": "automatic",
   "displayName": "Notik"
+  //   "package": "uz.nurafshon.notik",
+  //   "version": "0.1.0",
+  //   "versionCode": 1 // very first version
+  // }
 }

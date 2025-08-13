@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import React from 'react';
-import { createHomeStyles } from '../styles/home.styles';
+import { createTodoStyles, getCheckboxInnerStyle } from '../styles/todo.styles';
 import EmptyState from '../components/EmptyState';
 import Header from '../components/Header';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -27,7 +27,6 @@ import {
   View,
 } from 'react-native';
 // Removed unused SafeAreaView import
-import { globalStyles } from '../styles/globalStyles';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import { PersistentLogger } from '../utils/PersistentLogger';
 
@@ -36,13 +35,12 @@ function TodoScreen() {
 
   useEffect(() => {
     if (Platform.OS === 'android') {
-      // Delay to ensure activity is available
       setTimeout(() => {
         try {
-          const navColor =
-            colors.statusBarStyle === 'dark-content' ? '#00C853' : '#2962FF';
-          const iconStyle =
-            colors.statusBarStyle === 'dark-content' ? 'dark' : 'light';
+          // Match tab bar background color
+          const navColor = colors.statusBarStyle === 'dark-content' ? '#ffffff' : '#1a1a1a';
+          // These values match tabBarBgLight and tabBarBgDark
+          const iconStyle = colors.statusBarStyle === 'dark-content' ? 'dark' : 'light';
           SystemNavigationBar.setNavigationColor(
             navColor,
             iconStyle,
@@ -54,13 +52,13 @@ function TodoScreen() {
             error,
           );
         }
-      }, 100); // 100ms delay
+      }, 100);
     }
   }, [colors.statusBarStyle]);
   const [editingId, setEditingId] = useState<Id<'todos'> | null>(null);
   const [editText, setEditText] = useState('');
 
-  const homeStyles = createHomeStyles(colors);
+  const todoStyles = createTodoStyles(colors);
 
   const todos = useQuery(api.todos.getTodos);
   const toggleTodo = useMutation(api.todos.toggleTodo);
@@ -116,43 +114,34 @@ function TodoScreen() {
   const renderTodoItem = ({ item }: { item: Todo }) => {
     const isEditing = editingId === item._id;
     return (
-      <View style={homeStyles.todoItemWrapper}>
+      <View style={todoStyles.todoItemWrapper}>
         <LinearGradient
           colors={colors.gradients.surface}
-          style={homeStyles.todoItem}
+          style={todoStyles.todoItem}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
           <TouchableOpacity
-            style={homeStyles.checkbox}
+            style={todoStyles.checkbox}
             activeOpacity={0.7}
             onPress={() => handleToggleTodo(item._id)}
           >
-            <LinearGradient
-              colors={
-                item.isCompleted
-                  ? colors.gradients.success
-                  : colors.gradients.muted
-              }
+            <View
               style={[
-                {
-                  ...homeStyles.checkboxInner,
-                  borderColor: item.isCompleted
-                    ? globalStyles.transparentBg.backgroundColor
-                    : colors.border,
-                },
+                todoStyles.checkboxInner,
+                getCheckboxInnerStyle(item.isCompleted, colors),
               ]}
             >
               {item.isCompleted && (
                 <Ionicons name="checkmark" size={18} color="#fff" />
               )}
-            </LinearGradient>
+            </View>
           </TouchableOpacity>
 
           {isEditing ? (
-            <View style={homeStyles.editContainer}>
+            <View style={todoStyles.editContainer}>
               <TextInput
-                style={homeStyles.editInput}
+                style={todoStyles.editInput}
                 value={editText}
                 onChangeText={setEditText}
                 autoFocus
@@ -160,69 +149,51 @@ function TodoScreen() {
                 placeholder="Edit your todo..."
                 placeholderTextColor={colors.textMuted}
               />
-              <View style={homeStyles.editButtons}>
+              <View style={todoStyles.editButtons}>
                 <TouchableOpacity onPress={handleSaveEdit} activeOpacity={0.8}>
                   <LinearGradient
                     colors={colors.gradients.success}
-                    style={homeStyles.editButton}
+                    style={todoStyles.editButton}
                   >
                     <Ionicons name="checkmark" size={16} color="#fff" />
-                    <Text style={homeStyles.editButtonText}>Save</Text>
+                    <Text style={todoStyles.editButtonText}>Save</Text>
                   </LinearGradient>
                 </TouchableOpacity>
-
                 <TouchableOpacity
                   onPress={handleCancelEdit}
                   activeOpacity={0.8}
                 >
                   <LinearGradient
                     colors={colors.gradients.muted}
-                    style={homeStyles.editButton}
+                    style={todoStyles.editButton}
                   >
                     <Ionicons name="close" size={16} color="#fff" />
-                    <Text style={homeStyles.editButtonText}>Cancel</Text>
+                    <Text style={todoStyles.editButtonText}>Cancel</Text>
                   </LinearGradient>
                 </TouchableOpacity>
               </View>
             </View>
           ) : (
-            <View style={homeStyles.todoTextContainer}>
-              <Text
-                style={[
-                  {
-                    ...homeStyles.todoText,
-                    ...(item.isCompleted
-                      ? {
-                          textDecorationLine: 'line-through',
-                          color: colors.textMuted,
-                          opacity: 0.6,
-                        }
-                      : {}),
-                  },
-                ]}
+            <View style={todoStyles.todoTextRow}>
+              <TouchableOpacity
+                style={todoStyles.todoTextContainer}
+                onPress={() => handleEditTodo(item)}
+                activeOpacity={0.8}
               >
-                {item.text}
-              </Text>
-
-              <View style={homeStyles.todoActions}>
-                <TouchableOpacity
-                  onPress={() => handleEditTodo(item)}
-                  activeOpacity={0.8}
+                <Text
+                  style={[todoStyles.todoText, item.isCompleted ? todoStyles.todoTextCompleted : null]}
                 >
-                  <LinearGradient
-                    colors={colors.gradients.warning}
-                    style={homeStyles.actionButton}
-                  >
-                    <Ionicons name="pencil" size={14} color="#fff" />
-                  </LinearGradient>
-                </TouchableOpacity>
+                  {item.text}
+                </Text>
+              </TouchableOpacity>
+              <View style={todoStyles.todoActions}>
                 <TouchableOpacity
                   onPress={() => handleDeleteTodo(item._id)}
                   activeOpacity={0.8}
                 >
                   <LinearGradient
                     colors={colors.gradients.danger}
-                    style={homeStyles.actionButton}
+                    style={todoStyles.actionButton}
                   >
                     <Ionicons name="trash" size={14} color="#fff" />
                   </LinearGradient>
@@ -242,15 +213,15 @@ function TodoScreen() {
         translucent={true}
         backgroundColor="transparent"
       />
-      <View style={homeStyles.container}>
+      <View style={todoStyles.container}>
         <Header />
         <TodoInput />
         <FlatList
           data={todos}
           renderItem={renderTodoItem}
           keyExtractor={item => item._id}
-          style={homeStyles.todoList}
-          contentContainerStyle={homeStyles.todoListContent}
+          style={todoStyles.todoList}
+          contentContainerStyle={todoStyles.todoListContent}
           ListEmptyComponent={<EmptyState />}
         />
       </View>

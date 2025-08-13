@@ -17,11 +17,11 @@ const convex = new ConvexReactClient(CONVEX_URL, {
 });
 
 function App() {
-  const { isDarkMode } = useTheme();
+  const { isDarkMode, colors } = useTheme();
 
   useEffect(() => {
     if (Platform.OS === 'android') {
-      // Match tab bar background color
+      // Match tab bar background color on every theme change
       const navColor = isDarkMode ? '#1a1a1a' : '#ffffff';
       const iconStyle = isDarkMode ? 'light' : 'dark';
       setTimeout(() => {
@@ -31,7 +31,6 @@ function App() {
             iconStyle,
             'navigation',
           );
-          // Also set StatusBar background color
           import('react-native').then(({ StatusBar }) => {
             StatusBar.setBackgroundColor('transparent', true);
             StatusBar.setTranslucent(true);
@@ -43,7 +42,6 @@ function App() {
     }
   }, [isDarkMode]);
 
-  const { colors } = useTheme();
   return (
     <ConvexProvider client={convex}>
       <ErrorBoundary>
@@ -62,10 +60,12 @@ function App() {
   );
 }
 
-export default function AppWithThemeProvider() {
+function AppWithThemeProvider() {
   return (
     <ThemeProvider>
       <App />
     </ThemeProvider>
   );
 }
+
+export default AppWithThemeProvider;

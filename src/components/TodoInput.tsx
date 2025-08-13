@@ -1,4 +1,4 @@
-import { createHomeStyles } from '../styles/home.styles';
+import { createTodoStyles } from '../styles/todo.styles';
 import { api } from '../../convex/_generated/api';
 import useTheme from '../hooks/useTheme';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
@@ -9,7 +9,7 @@ import { Alert, TextInput, TouchableOpacity, View } from 'react-native';
 
 const TodoInput = () => {
   const { colors } = useTheme();
-  const homeStyles = createHomeStyles(colors);
+  const todoStyles = createTodoStyles(colors);
 
   const [newTodo, setNewTodo] = useState('');
   const addTodo = useMutation(api.todos.addTodo);
@@ -27,15 +27,17 @@ const TodoInput = () => {
   };
 
   return (
-    <View style={homeStyles.inputSection}>
-      <View style={homeStyles.inputWrapper}>
+    <View style={todoStyles.inputSection}>
+      <View style={todoStyles.inputWrapper}>
         <TextInput
-          style={homeStyles.input}
+          style={todoStyles.input}
           placeholder="What needs to be done?"
           value={newTodo}
           onChangeText={setNewTodo}
           onSubmitEditing={handleAddTodo}
           placeholderTextColor={colors.textMuted}
+          numberOfLines={1}
+          multiline={false}
         />
         <TouchableOpacity
           onPress={handleAddTodo}
@@ -46,10 +48,7 @@ const TodoInput = () => {
             colors={
               newTodo.trim() ? colors.gradients.primary : colors.gradients.muted
             }
-            style={[
-              homeStyles.addButton,
-              !newTodo.trim() && homeStyles.addButtonDisabled,
-            ]}
+            style={[todoStyles.addButton, !newTodo.trim() && todoStyles.addButtonDisabled]}
           >
             <Ionicons name="add" size={24} color="#ffffff" />
           </LinearGradient>

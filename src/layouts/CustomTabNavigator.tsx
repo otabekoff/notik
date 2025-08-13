@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Pressable, Text, Platform } from 'react-native';
+import { Animated } from 'react-native';
+// Removed duplicate import
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons, type IoniconsIconName } from '@react-native-vector-icons/ionicons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -25,19 +27,32 @@ import useTheme from '../hooks/useTheme';
 
 export function CustomTabNavigator() {
   const [activeTab, setActiveTab] = useState<'Todo' | 'Settings'>('Todo');
+  const [prevTab, setPrevTab] = useState<'Todo' | 'Settings'>(activeTab);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
   const insets = useSafeAreaInsets();
   const { isDarkMode } = useTheme();
 
+  useEffect(() => {
+    if (activeTab !== prevTab) {
+      fadeAnim.setValue(0);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+      setPrevTab(activeTab);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
   const handleTabPress = (tabName: 'Todo' | 'Settings') => {
-    try {
+    if (tabName !== activeTab) {
       PersistentLogger.info(`Tab pressed: ${tabName}`, {
         from: activeTab,
         to: tabName,
       });
       setActiveTab(tabName);
       PersistentLogger.info(`Tab changed successfully to: ${tabName}`);
-    } catch (error) {
-      PersistentLogger.error(`Error changing tab to ${tabName}`, error);
     }
   };
 
@@ -57,101 +72,52 @@ export function CustomTabNavigator() {
         ? 'rgba(255,255,255,0.3)'
         : 'rgba(0,0,0,0.2)',
     borderless: false,
-    // radius: 24,
     foreground: true,
   });
 
   return (
     <ErrorBoundary fallback={NavigationErrorFallback}>
       <View style={globalStyles.container}>
-        {/* Content Area */}
-        <View style={globalStyles.contentContainer}>
-          {activeTab === 'Todo' ? (
-            <TodoScreen />
-          ) : (
-            <SettingsScreen />
-          )}
-        </View>
+        {/* Content Area with Fade Transition */}
+        <Animated.View style={[globalStyles.contentContainer, { opacity: fadeAnim }]}> 
+          {activeTab === 'Todo' ? <TodoScreen /> : <SettingsScreen />}
+        </Animated.View>
 
         {/* Custom Tab Bar */}
         <View
-          style={[
-            tabBarStyles.tabBar,
-            isDarkMode ? tabBarStyles.tabBarBgDark : tabBarStyles.tabBarBgLight,
-            { paddingBottom: insets.bottom },
-          ]}
+          style={[tabBarStyles.tabBar, isDarkMode ? tabBarStyles.tabBarBgDark : tabBarStyles.tabBarBgLight, { paddingBottom: insets.bottom }]}
         >
           <Pressable
-            style={[
-              tabBarStyles.tabItem,
-              activeTab === 'Todo' && tabBarStyles.activeTabItem,
-            ]}
+            style={[tabBarStyles.tabItem, activeTab === 'Todo' && tabBarStyles.activeTabItem]}
             onPress={() => handleTabPress('Todo')}
             android_ripple={Platform.OS === 'android' ? getRippleConfig(isDarkMode) : undefined}
           >
             <Ionicons
               name={getIconName('Todo', activeTab === 'Todo')}
               size={24}
-              color={
-                activeTab === 'Todo'
-                  ? isDarkMode
-                    ? '#ffffff'
-                    : '#007AFF'
-                  : isDarkMode
-                  ? '#666666'
-                  : '#999999'
-              }
+              color={activeTab === 'Todo' ? (isDarkMode ? '#ffffff' : '#007AFF') : isDarkMode ? '#666666' : '#999999'}
               style={tabBarStyles.tabIcon}
             />
             <Text
-              style={[
-                tabBarStyles.tabLabel,
-                activeTab === 'Todo'
-                  ? isDarkMode
-                    ? tabBarStyles.tabLabelActiveDark
-                    : tabBarStyles.tabLabelActiveLight
-                  : isDarkMode
-                  ? tabBarStyles.tabLabelInactiveDark
-                  : tabBarStyles.tabLabelInactiveLight,
-              ]}
+              style={[tabBarStyles.tabLabel, activeTab === 'Todo' ? (isDarkMode ? tabBarStyles.tabLabelActiveDark : tabBarStyles.tabLabelActiveLight) : isDarkMode ? tabBarStyles.tabLabelInactiveDark : tabBarStyles.tabLabelInactiveLight]}
             >
               Todos
             </Text>
           </Pressable>
 
           <Pressable
-            style={[
-              tabBarStyles.tabItem,
-              activeTab === 'Settings' && tabBarStyles.activeTabItem,
-            ]}
+            style={[tabBarStyles.tabItem, activeTab === 'Settings' && tabBarStyles.activeTabItem]}
             onPress={() => handleTabPress('Settings')}
             android_ripple={Platform.OS === 'android' ? getRippleConfig(isDarkMode) : undefined}
           >
             <Ionicons
               name={getIconName('Settings', activeTab === 'Settings')}
               size={24}
-              color={
-                activeTab === 'Settings'
-                  ? isDarkMode
-                    ? '#ffffff'
-                    : '#007AFF'
-                  : isDarkMode
-                  ? '#666666'
-                  : '#999999'
-              }
+              color={activeTab === 'Settings' ? (isDarkMode ? '#ffffff' : '#007AFF') : isDarkMode ? '#666666' : '#999999'}
               style={tabBarStyles.tabIcon}
             />
             <Text
-              style={[
-                tabBarStyles.tabLabel,
-                activeTab === 'Settings'
-                  ? isDarkMode
-                    ? tabBarStyles.tabLabelActiveDark
-                    : tabBarStyles.tabLabelActiveLight
-                  : isDarkMode
-                  ? tabBarStyles.tabLabelInactiveDark
-                  : tabBarStyles.tabLabelInactiveLight,
-              ]}
+              style={[tabBarStyles.tabLabel, activeTab === 'Settings' ? (isDarkMode ? tabBarStyles.tabLabelActiveDark : tabBarStyles.tabLabelActiveLight) : isDarkMode ? tabBarStyles.tabLabelInactiveDark : tabBarStyles.tabLabelInactiveLight]}
             >
               Settings
             </Text>

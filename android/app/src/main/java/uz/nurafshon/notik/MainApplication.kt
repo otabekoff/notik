@@ -1,4 +1,4 @@
-package com.notik
+package uz.nurafshon.notik
 
 import android.app.Application
 import com.facebook.react.PackageList

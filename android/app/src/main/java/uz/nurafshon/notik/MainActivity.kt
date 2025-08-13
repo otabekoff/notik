@@ -1,4 +1,4 @@
-package com.notik
+package uz.nurafshon.notik
 
 import android.os.Bundle
 
