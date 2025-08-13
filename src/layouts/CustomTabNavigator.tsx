@@ -3,15 +3,12 @@ import { View, Pressable, Text, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons, type IoniconsIconName } from '@react-native-vector-icons/ionicons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import { TodoScreen } from '../pages/TodoScreen';
-import { SettingsScreen } from '../pages/SettingsScreen';
+import TodoScreen from '../pages/TodoScreen';
+import SettingsScreen from '../pages/SettingsScreen';
 import { PersistentLogger } from '../utils/PersistentLogger';
 import { tabBarStyles } from '../styles/tabBarStyles';
 import { globalStyles } from '../styles/globalStyles';
 
-interface CustomTabNavigatorProps {
-  isDarkMode: boolean;
-}
 
 import type { ErrorInfo } from 'react';
 
@@ -24,9 +21,12 @@ function NavigationErrorFallback(error: Error, _errorInfo: ErrorInfo) {
   );
 }
 
-export function CustomTabNavigator({ isDarkMode }: CustomTabNavigatorProps) {
+import useTheme from '../hooks/useTheme';
+
+export function CustomTabNavigator() {
   const [activeTab, setActiveTab] = useState<'Todo' | 'Settings'>('Todo');
   const insets = useSafeAreaInsets();
+  const { isDarkMode } = useTheme();
 
   const handleTabPress = (tabName: 'Todo' | 'Settings') => {
     try {
@@ -62,16 +62,14 @@ export function CustomTabNavigator({ isDarkMode }: CustomTabNavigatorProps) {
   });
 
   return (
-    <ErrorBoundary
-      fallback={NavigationErrorFallback}
-    >
+    <ErrorBoundary fallback={NavigationErrorFallback}>
       <View style={globalStyles.container}>
         {/* Content Area */}
         <View style={globalStyles.contentContainer}>
           {activeTab === 'Todo' ? (
-            <TodoScreen isDarkMode={isDarkMode} />
+            <TodoScreen />
           ) : (
-            <SettingsScreen isDarkMode={isDarkMode} />
+            <SettingsScreen />
           )}
         </View>
 
@@ -117,7 +115,7 @@ export function CustomTabNavigator({ isDarkMode }: CustomTabNavigatorProps) {
                   : tabBarStyles.tabLabelInactiveLight,
               ]}
             >
-              Todo
+              Todos
             </Text>
           </Pressable>
 

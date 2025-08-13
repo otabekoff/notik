@@ -7,6 +7,9 @@ export const globalStyles = StyleSheet.create({
   contentContainer: {
     flex: 1,
   },
+    transparentBg: {
+    backgroundColor: 'transparent',
+  },
   // Theme Toggle Styles
   switchContainer: {
     position: 'absolute',
@@ -131,6 +134,9 @@ export const globalStyles = StyleSheet.create({
   switchTextDark: {
     color: '#fff',
   },
+  zeroBorderBottom: {
+    borderBottomWidth: 0,
+  }
 });
 
 export const rippleLight = { backgroundColor: 'rgba(0,0,0,0.1)' };
